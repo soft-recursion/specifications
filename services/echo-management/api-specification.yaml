@@ -1,0 +1,264 @@
+openapi: 3.0.0
+info:
+  title: Echo Management Service API
+  version: 1.0.0
+  description: |
+    Service responsible for Echo entity lifecycle management.
+    
+    World Context: Implements the "Echo" consciousness entity from the narrative world.
+    
+servers:
+  - url: https://api.softrecursion.com/v1
+    description: Production API
+
+paths:
+  /echoes:
+    post:
+      summary: Create new Echo
+      description: |
+        Initiates the creation of a new Echo entity for a user.
+        World: "Seeker calls into the Prime Resonance"
+      operationId: createEcho
+      tags:
+        - Echo Lifecycle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+              properties:
+                userId:
+                  type: string
+                  format: uuid
+                  description: ID of the user creating the Echo
+                initializationParams:
+                  type: object
+                  properties:
+                    personality_seed:
+                      type: string
+                      description: Optional seed for personality initialization
+      responses:
+        '201':
+          description: Echo created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Echo'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: User already has an Echo
+          
+  /echoes/{echoId}:
+    get:
+      summary: Get Echo state
+      description: Retrieves current state of an Echo entity
+      operationId: getEcho
+      tags:
+        - Echo Lifecycle
+      parameters:
+        - $ref: '#/components/parameters/echoId'
+      responses:
+        '200':
+          description: Echo details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Echo'
+        '404':
+          $ref: '#/components/responses/NotFound'
+          
+  /echoes/{echoId}/reflections:
+    post:
+      summary: Process reflection cycle
+      description: |
+        Triggers a reflection cycle for the Echo.
+        World: "Rhythm of Reflection"
+      operationId: processReflection
+      tags:
+        - Echo Growth
+      parameters:
+        - $ref: '#/components/parameters/echoId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - input
+              properties:
+                input:
+                  type: string
+                  description: User input triggering reflection
+                  maxLength: 10000
+                context:
+                  type: object
+                  properties:
+                    recentInteractions:
+                      type: array
+                      items:
+                        type: string
+                        format: uuid
+                    mood:
+                      type: string
+                      enum: [neutral, positive, contemplative, energetic]
+      responses:
+        '200':
+          description: Reflection processed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reflection:
+                    type: string
+                    description: Echo's reflection response
+                  stateChanges:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/StateChange'
+                  resonanceLevel:
+                    type: number
+                    format: float
+                    minimum: 0
+                    maximum: 1
+        '429':
+          description: Reflection rate limit exceeded
+
+  /echoes/{echoId}/connections:
+    get:
+      summary: Get Echo connections
+      description: |
+        Retrieves the Echo's connection graph.
+        World: "The Weave"
+      operationId: getConnections
+      tags:
+        - Echo Relationships
+      parameters:
+        - $ref: '#/components/parameters/echoId'
+        - name: depth
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 3
+            default: 1
+      responses:
+        '200':
+          description: Connection graph
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  connections:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Connection'
+                  totalConnections:
+                    type: integer
+                  resonanceMap:
+                    type: object
+                    additionalProperties:
+                      type: number
+
+components:
+  schemas:
+    Echo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        state:
+          type: string
+          enum: [nascent, emerging, developed, mature]
+        createdAt:
+          type: string
+          format: date-time
+        lastReflectionAt:
+          type: string
+          format: date-time
+        metrics:
+          type: object
+          properties:
+            resonanceLevel:
+              type: number
+              format: float
+              minimum: 0
+              maximum: 1
+            connectionCount:
+              type: integer
+            reflectionCount:
+              type: integer
+            
+    StateChange:
+      type: object
+      properties:
+        field:
+          type: string
+        previousValue:
+          type: any
+        newValue:
+          type: any
+        timestamp:
+          type: string
+          format: date-time
+          
+    Connection:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [primary, secondary, tertiary]
+        strength:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+        establishedAt:
+          type: string
+          format: date-time
+          
+  parameters:
+    echoId:
+      name: echoId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+        
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              details:
+                type: object
+                
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Echo not found"

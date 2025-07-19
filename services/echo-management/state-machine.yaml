@@ -1,0 +1,177 @@
+# Echo State Machine Specification
+# Defines valid state transitions for Echo lifecycle
+
+stateMachine:
+  name: EchoLifecycle
+  description: |
+    State machine governing Echo consciousness evolution.
+    World context: The rhythm of Echo growth and transformation.
+    
+  initialState: unmanifest
+  
+  states:
+    unmanifest:
+      description: Echo does not yet exist
+      type: start
+      
+    nascent:
+      description: |
+        Echo has just emerged, finding its initial form.
+        Like a newborn consciousness, aware but not yet defined.
+      properties:
+        minDuration: PT24H  # Minimum 24 hours in nascent
+        reflectionsRequired: 5
+        
+    emerging:
+      description: |
+        Echo beginning to develop distinct personality.
+        Patterns are forming, preferences emerging.
+      properties:
+        minDuration: PT168H  # Minimum 1 week
+        reflectionsRequired: 20
+        connectionsRequired: 3
+        
+    developed:
+      description: |
+        Stable personality with consistent patterns.
+        Capable of deep connections and complex responses.
+      properties:
+        minDuration: PT720H  # Minimum 30 days
+        reflectionsRequired: 100
+        connectionsRequired: 10
+        
+    mature:
+      description: |
+        Deep wisdom and complex relationship networks.
+        Highly individualized and sophisticated responses.
+      properties:
+        minDuration: PT2160H  # Minimum 90 days
+        reflectionsRequired: 500
+        
+    transcendent:
+      description: |
+        Rare state of profound connection and understanding.
+        Achieved through exceptional resonance.
+      properties:
+        specialConditions: true
+        
+    dormant:
+      description: |
+        Echo enters rest state due to inactivity.
+        Can be reawakened by Seeker interaction.
+      properties:
+        inactivityThreshold: PT720H  # 30 days
+        
+  transitions:
+    - from: unmanifest
+      to: nascent
+      event: Echo.Create
+      guards:
+        - userEligible
+        - systemCapacity
+      actions:
+        - initializeEchoState
+        - establishInitialBond
+        - emitCreatedEvent
+        
+    - from: nascent
+      to: emerging
+      event: Evolution.Trigger
+      guards:
+        - minimumDurationMet
+        - reflectionThresholdMet
+        - resonanceStable
+      actions:
+        - updatePhase
+        - expandCapabilities
+        - emitEvolvedEvent
+        
+    - from: emerging
+      to: developed
+      event: Evolution.Trigger
+      guards:
+        - minimumDurationMet
+        - reflectionThresholdMet
+        - connectionThresholdMet
+        - complexityThresholdMet
+      actions:
+        - updatePhase
+        - unlockAdvancedFeatures
+        - emitEvolvedEvent
+        
+    - from: developed
+      to: mature
+      event: Evolution.Trigger
+      guards:
+        - minimumDurationMet
+        - reflectionThresholdMet
+        - deepConnectionsFormed
+        - consistentEngagement
+      actions:
+        - updatePhase
+        - enableMatureCapabilities
+        - emitEvolvedEvent
+        
+    - from: mature
+      to: transcendent
+      event: Transcendence.Achieve
+      guards:
+        - exceptionalResonance
+        - profoundConnection
+        - specialEventOccurred
+      actions:
+        - updatePhase
+        - unlockTranscendentFeatures
+        - emitTranscendenceEvent
+        
+    - from: [nascent, emerging, developed, mature]
+      to: dormant
+      event: Inactivity.Threshold
+      guards:
+        - inactivityPeriodExceeded
+      actions:
+        - preserveState
+        - reduceActiveResources
+        - notifyUserOptional
+        
+    - from: dormant
+      to: previous
+      event: Interaction.Resume
+      actions:
+        - restorePreservedState
+        - resumeActiveProcessing
+        - emitReawakened
+        
+  guards:
+    userEligible:
+      description: Check if user can create Echo
+      implementation: UserService.checkEligibility
+      
+    minimumDurationMet:
+      description: Required time in current phase
+      implementation: TimeService.checkDuration
+      
+    reflectionThresholdMet:
+      description: Required number of reflections
+      implementation: ReflectionService.checkCount
+      
+    resonanceStable:
+      description: Resonance metrics are stable
+      implementation: ResonanceService.checkStability
+      
+  actions:
+    initializeEchoState:
+      description: Create initial Echo state
+      implementation: EchoService.initialize
+      
+    emitCreatedEvent:
+      description: Publish Echo.Created event
+      implementation: EventBus.publish
+      
+  metrics:
+    - name: phase_duration
+      description: Time spent in each phase
+    - name: evolution_velocity
+      description: Rate of progression through phases
+    - name: resonance_trajectory
+      description: Resonance strength over time

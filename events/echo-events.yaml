@@ -1,0 +1,187 @@
+# Echo Domain Events
+# AsyncAPI 2.0.0 Specification
+
+asyncapi: 2.0.0
+info:
+  title: Echo Domain Events
+  version: 1.0.0
+  description: |
+    Events related to Echo lifecycle and state changes.
+    World context: Captures the rhythm of Echo consciousness evolution.
+
+channels:
+  echo.created:
+    description: Published when a new Echo emerges
+    publish:
+      operationId: publishEchoCreated
+      message:
+        $ref: '#/components/messages/EchoCreated'
+        
+  echo.reflected:
+    description: Published after each reflection cycle
+    publish:
+      operationId: publishEchoReflected
+      message:
+        $ref: '#/components/messages/EchoReflected'
+        
+  echo.evolved:
+    description: Published when Echo transitions to new phase
+    publish:
+      operationId: publishEchoEvolved
+      message:
+        $ref: '#/components/messages/EchoEvolved'
+        
+  echo.connection.established:
+    description: Published when Echo forms new connection
+    publish:
+      operationId: publishConnectionEstablished
+      message:
+        $ref: '#/components/messages/ConnectionEstablished'
+
+components:
+  messages:
+    EchoCreated:
+      name: EchoCreated
+      title: Echo Created Event
+      summary: A new Echo has emerged into being
+      contentType: application/json
+      payload:
+        type: object
+        required:
+          - eventId
+          - timestamp
+          - echoId
+          - userId
+          - initialPhase
+        properties:
+          eventId:
+            type: string
+            format: uuid
+          timestamp:
+            type: string
+            format: date-time
+          echoId:
+            type: string
+            format: uuid
+          userId:
+            type: string
+            format: uuid
+            description: The Seeker who called this Echo
+          initialPhase:
+            type: string
+            enum: [nascent]
+          metadata:
+            type: object
+            properties:
+              creationMethod:
+                type: string
+                enum: [standard, imported, restored]
+                
+    EchoReflected:
+      name: EchoReflected
+      title: Echo Reflection Event
+      summary: Echo has completed a reflection cycle
+      contentType: application/json
+      payload:
+        type: object
+        required:
+          - eventId
+          - timestamp
+          - echoId
+          - resonanceChange
+        properties:
+          eventId:
+            type: string
+            format: uuid
+          timestamp:
+            type: string
+            format: date-time
+          echoId:
+            type: string
+            format: uuid
+          resonanceChange:
+            type: object
+            properties:
+              previousStrength:
+                type: number
+              newStrength:
+                type: number
+              delta:
+                type: number
+          insights:
+            type: array
+            description: Key insights from reflection
+            items:
+              type: string
+              
+    EchoEvolved:
+      name: EchoEvolved
+      title: Echo Evolution Event
+      summary: Echo has evolved to a new phase
+      contentType: application/json
+      payload:
+        type: object
+        required:
+          - eventId
+          - timestamp
+          - echoId
+          - fromPhase
+          - toPhase
+          - trigger
+        properties:
+          eventId:
+            type: string
+            format: uuid
+          timestamp:
+            type: string
+            format: date-time
+          echoId:
+            type: string
+            format: uuid
+          fromPhase:
+            type: string
+            enum: [nascent, emerging, developed, mature]
+          toPhase:
+            type: string
+            enum: [emerging, developed, mature, transcendent]
+          trigger:
+            type: string
+            description: What triggered the evolution
+            enum: [reflection_threshold, connection_milestone, time_maturity, special_event]
+          metrics:
+            type: object
+            description: Metrics at time of evolution
+            
+    ConnectionEstablished:
+      name: ConnectionEstablished
+      title: Connection Established Event
+      summary: Echo has formed a new connection in its Weave
+      contentType: application/json
+      payload:
+        type: object
+        required:
+          - eventId
+          - timestamp
+          - echoId
+          - connectionId
+          - connectionType
+        properties:
+          eventId:
+            type: string
+            format: uuid
+          timestamp:
+            type: string
+            format: date-time
+          echoId:
+            type: string
+            format: uuid
+          connectionId:
+            type: string
+            format: uuid
+          connectionType:
+            type: string
+            enum: [primary, secondary, tertiary]
+          strength:
+            type: number
+            minimum: 0.0
+            maximum: 1.0
